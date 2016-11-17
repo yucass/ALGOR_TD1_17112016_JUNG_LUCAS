@@ -1,0 +1,61 @@
+//Création des espaces de stockage
+create schema MAGASIN;
+create dbspace SP_COMMANDE;
+create dbspace SP_PRODUITS;
+create dbspace SP_CLIENT;
+
+//creation des index
+Create unique index XID_NUMCLI on CLIENT(ID_NUMCLI) ;
+Create index XID_NUMCDE on COMMANDE(ID_NUMCDE) ;
+create index XID_PRODUIT on PRODUITS (ID_PRODUIT);
+
+
+//creation de la table CLIENT
+Create table CLIENT (
+		ID_NUMCLI decimal (12) not null,
+		NOM char (32) not null,
+		PRENOM char (32) not null,
+		ADRESSE char (64) not null,
+Primary key (ID_NUMCLI),
+In SP_CLIENT ;
+
+
+//création de la table ADRESSE
+Create table ADRESSE (
+		ID_ADRESSE char (64) not null,
+Primary key (ID_ADRESSE)
+In SP_COMMANDE ;
+
+//creation de la table PRODUITS
+Create table COMPTE_APPARTENANCE (
+		ID_PRODUIT decimal (12) not null,
+		LIBELLE char (36) not null,
+		PRIX float (12) not null,
+Primary key (ID_PRODUIT),
+In SP_PRODUITS ;
+
+
+//Creation de la table COMMANDE
+Create table COMMANDE (
+		DATE_CDE date (8) not null,
+		ID_NUMCDE decimal (12) not null,
+		ID_NUMCLI decimal (12),		
+Primary key (ID_NUMCDE),
+Foreign key (ID_NUMCLI) references CLIENT,
+	On delete no action on update cascade),
+In SP_COMMANDE ;
+
+//Creation de la table DETAIL_CDE
+Create table DETAIL_CDE (
+		QUANTITE decimal (12) not null,
+		ID_NUMCDE decimal (12) not null,
+		ID_PRODUIT decimal (12) not null,		
+		ID_ADRESSE char (64) not null,
+Primary key (ID_NUMCDE),
+Foreign key (ID_NUMCDE) references COMMANDE,
+	On delete no action on update cascade),
+	Foreign key (ID_PRODUIT) references PRODUITS,
+	On delete no action on update cascade),
+	Foreign key (ID_ADRESSE) references ADRESSE,
+	On delete no action on update cascade),
+In SP_COMMANDE ;

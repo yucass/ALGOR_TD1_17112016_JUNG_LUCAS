@@ -1,0 +1,53 @@
+//Création des espaces de stockage
+create schema COMPTE_BANQUE;
+create dbspace SP_COMPTE;
+create dbspace SP_CLIENT;
+
+//creation des index
+Create unique index XID_NUMCLI on CLIENT(ID_NUMCLI) ;
+Create index XID_NUMCPT on COMPTE(ID_NUMCPT) ;
+create index XID_NUMOPE on OPERATIONS (ID_NUMOPE);
+
+
+//creation de la table CLIENT
+Create table CLIENT (
+		ID_NUMCLI decimal (12) not null,
+		NOM char (32) not null,
+		PRENOM char (32) not null,
+		ADRESSE char (64) not null,
+Primary key (ID_NUMCLI),
+
+In SP_CLIENT ;
+
+
+//création de la table COMPTE
+Create table COMPTE (
+		ID_NUMCPT decimal (12) not null,
+		SOLDE float (15) not null,
+Primary key (ID_NUMCPT)
+In SP_COMPTE ;
+
+//creation de la table COMPTE_APPARTENANCE
+Create table COMPTE_APPARTENANCE (
+		ID_NUMCPT decimal (12) not null,
+		ID_NUMCLI decimal (12) not null,
+		ID_CPTAPP decimal (12) not null,
+Primary key (ID_CPTAPP),
+Foreign key (ID_NUMCPT) references COMPTE,
+On delete no action on update cascade
+Foreign key (ID_NUMCLI) references CLIENT,
+On delete no action on update cascade)
+In SP_CLIENT ;
+
+//Creation de la table OPERATIONS
+Create table OPERATIONS (
+		ID_NUMCPT decimal (12) not null,
+		ID_NUMOPE decimal (12) not null,
+		DATE_RETRAIT date (8),		
+		DATE_DEPOT date (8),		
+		MONTANT_RETRAIT float (15),	
+		MONTANT_DEPOT float (15),
+Primary key (ID_NUMOPE),
+Foreign key (ID_NUMCPT) references COMPTE,
+	On delete no action on update cascade),
+In SP_COMPTE ;
